@@ -221,9 +221,6 @@ public class AnimationMovementController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        Debug.Log($"Is Grounded: {characterController.isGrounded}");
-
-
         HandleAnimation();
         HandleRotation();       
         if (isRunPressed)
