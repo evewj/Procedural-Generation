@@ -18,7 +18,9 @@ public class AnimationMovementController : MonoBehaviour
     private Vector2 currentMovementInput;
     private Vector3 currentMovement;
     private Vector3 currentRunMovement;
+    private Vector3 currentPositionToLookAt;
     private bool isMovementPressed;
+    private bool isRotationPressed;
     private bool isRunPressed;
     private bool isJumpPressed = false;
     private bool isJumping = false;
@@ -28,8 +30,9 @@ public class AnimationMovementController : MonoBehaviour
     private Dictionary<int, float> jumpGravities = new Dictionary<int, float>();
     private Coroutine currentJumpResetCoroutine = null;
 
-    public float rotationFactorPerFrame = 1.0f;
+    public float rotationFactorPerFrame = 2.0f;
     public float runMultiplier = 5.0f;
+    public float walkMultiplier = 2.0f;
     public float groundedGravity = -0.05f;
     public float gravity = -9.8f;
 
@@ -92,9 +95,11 @@ public class AnimationMovementController : MonoBehaviour
     private void OnMovementInput(InputAction.CallbackContext context)
     {
         currentMovementInput = context.ReadValue<Vector2>();
-        currentMovement = transform.right * currentMovementInput.x + transform.forward * currentMovementInput.y;
+        currentMovement = transform.forward * currentMovementInput.y * walkMultiplier;
         currentRunMovement = runMultiplier * currentMovement;
-        isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
+        currentPositionToLookAt = transform.forward * currentMovementInput.y + transform.right * currentMovementInput.x;
+        isMovementPressed = currentMovementInput.y != 0;
+        isRotationPressed = currentMovementInput.x != 0;
     }
 
     private void OnRun(InputAction.CallbackContext context)
@@ -173,17 +178,10 @@ public class AnimationMovementController : MonoBehaviour
 
     private void HandleRotation()
     {
-        Vector3 positionToLookAt;       
-
-        positionToLookAt.x = currentMovement.x;
-        positionToLookAt.y = 0;
-        positionToLookAt.z = currentMovement.z;
-
-        Quaternion currentRotation = transform.rotation;
-
-        if(isMovementPressed)
+        if(isRotationPressed)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
+            Quaternion currentRotation = transform.rotation;
+            Quaternion targetRotation = Quaternion.LookRotation(currentPositionToLookAt);
             transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, rotationFactorPerFrame * Time.deltaTime);
         }
     }

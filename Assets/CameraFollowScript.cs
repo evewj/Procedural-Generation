@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraFollowScript : MonoBehaviour
 {
     public Transform targetObject;
-    public float smoothFactor = 0.5f;
+    public float smoothFactor = 5f;
     public bool lookAtTarget = true;
     public float cameraBehindDistance = 5f;
     public float cameraAboveDistance = 2f;
@@ -20,7 +20,7 @@ public class CameraFollowScript : MonoBehaviour
     void LateUpdate()
     {
         Vector3 newPosition = targetObject.transform.position - targetObject.transform.forward * cameraBehindDistance + targetObject.transform.up * cameraAboveDistance;
-        transform.position = Vector3.Slerp(transform.position, newPosition, smoothFactor);
+        transform.position = Vector3.Slerp(transform.position, newPosition, smoothFactor * Time.deltaTime);
         if (lookAtTarget)
         {
             transform.LookAt(targetObject);
