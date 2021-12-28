@@ -29,7 +29,7 @@ public class AnimationMovementController : MonoBehaviour
     private Coroutine currentJumpResetCoroutine = null;
 
     public float rotationFactorPerFrame = 1.0f;
-    public float runMultiplier = 3.0f;
+    public float runMultiplier = 5.0f;
     public float groundedGravity = -0.05f;
     public float gravity = -9.8f;
 
